@@ -23,115 +23,62 @@ import random
 
 from itertools import combinations
 
-# Fixtures for road trip waypoints
-
-all_waypoints = ["USS Alabama, Battleship Parkway, Mobile, AL",
-                 "Grand Canyon National Park, Arizona",
-                 "Toltec Mounds, Scott, AR",
-                 "San Andreas Fault, San Benito County, CA",
-                 "Cable Car Museum, 94108, 1201 Mason St, San Francisco, CA 94108",
-                 "Pikes Peak, Colorado",
-                 "The Mark Twain House & Museum, Farmington Avenue, Hartford, CT",
-                 "New Castle Historic District, Delaware",
-                 "White House, Pennsylvania Avenue Northwest, Washington, DC",
-                 "Cape Canaveral, FL",
-                 "Okefenokee Swamp Park, Okefenokee Swamp Park Road, Waycross, GA",
-                 "Craters of the Moon National Monument & Preserve, Arco, ID",
-                 "Lincoln Home National Historic Site Visitor Center, 426 South 7th Street, Springfield, IL",
-                 "West Baden Springs Hotel, West Baden Avenue, West Baden Springs, IN",
-                 "Terrace Hill, Grand Avenue, Des Moines, IA",
-                 "C. W. Parker Carousel Museum, South Esplanade Street, Leavenworth, KS",
-                 "Mammoth Cave National Park, Mammoth Cave Pkwy, Mammoth Cave, KY",
-                 "French Quarter, New Orleans, LA",
-                 "Acadia National Park, Maine",
-                 "Maryland State House, 100 State Cir, Annapolis, MD 21401",
-                 "USS Constitution, Boston, MA",
-                 "Olympia Entertainment, Woodward Avenue, Detroit, MI",
-                 "Fort Snelling, Tower Avenue, Saint Paul, MN",
-                 "Vicksburg National Military Park, Clay Street, Vicksburg, MS",
-                 "Gateway Arch, Washington Avenue, St Louis, MO",
-                 "Glacier National Park, West Glacier, MT",
-                 "Ashfall Fossil Bed, Royal, NE",
-                 "Hoover Dam, NV",
-                 "Omni Mount Washington Resort, Mount Washington Hotel Road, Bretton Woods, NH",
-                 "Congress Hall, Congress Place, Cape May, NJ 08204",
-                 "Carlsbad Caverns National Park, Carlsbad, NM",
-                 "Statue of Liberty, Liberty Island, NYC, NY",
-                 "Wright Brothers National Memorial Visitor Center, Manteo, NC",
-                 "Fort Union Trading Post National Historic Site, Williston, North Dakota 1804, ND",
-                 "Spring Grove Cemetery, Spring Grove Avenue, Cincinnati, OH",
-                 "Chickasaw National Recreation Area, 1008 W 2nd St, Sulphur, OK 73086",
-                 "Columbia River Gorge National Scenic Area, Oregon",
-                 "Liberty Bell, 6th Street, Philadelphia, PA",
-                 "The Breakers, Ochre Point Avenue, Newport, RI",
-                 "Fort Sumter National Monument, Sullivan's Island, SC",
-                 "Mount Rushmore National Memorial, South Dakota 244, Keystone, SD",
-                 "Graceland, Elvis Presley Boulevard, Memphis, TN",
-                 "The Alamo, Alamo Plaza, San Antonio, TX",
-                 "Bryce Canyon National Park, Hwy 63, Bryce, UT",
-                 "Shelburne Farms, Harbor Road, Shelburne, VT",
-                 "Mount Vernon, Fairfax County, Virginia",
-                 "Hanford Site, Benton County, WA",
-                 "Lost World Caverns, Lewisburg, WV",
-                 "Taliesin, County Road C, Spring Green, Wisconsin",
-                 "Yellowstone National Park, WY 82190"]
-
 # Invoke Google Maps
 
-gmaps = googlemaps.Client(key="FUTURE_API_KEY")
+gmaps = googlemaps.Client(key="AIzaSyDfvx3mjNX3kjZ1lUnS_plF8MqymI6I8Ec")
 
 # Gather the distance traveled on the shortest route between all waypoints
 
-waypoint_distances = {}
-waypoint_durations = {}
+def find_paired_data(waypoints):
+    """ takes a list of waypoints, and finds the driving distance and
+    duration between each combination of two """
 
-for (waypoint1, waypoint2) in combinations(all_waypoints, 2):
-    try:
-        route = gmaps.distance_matrix(origins=[waypoint1],
-                                      destinations=[waypoint2],
-                                      mode="driving",
-                                      language="English",
-                                      units="metric")
+    waypoint_distances = {}
+    waypoint_durations = {}
 
-        # "distance" is in meters
-        distance = route["rows"][0]["elements"][0]["distance"]["value"]
+    num_errors = 0
+    for (waypoint1, waypoint2) in combinations(waypoints, 2):
+        # check if waypoint pair exists in database
+            # TODO: if it does, query the data and add to waypoint_distances + waypoint_durations
+            # if not query gmaps.distance_matrix
+        try:
+            route = gmaps.distance_matrix(origins=[waypoint1],
+                                          destinations=[waypoint2],
+                                          #TODO: change waypoint format to lat/lon
+                                          mode="driving",
+                                          language="English",
+                                          units="metric")
 
-        # "duration" is in seconds
-        duration = route["rows"][0]["elements"][0]["duration"]["value"]
+            # "distance" is in meters
+            distance = route["rows"][0]["elements"][0]["distance"]["value"]
 
-        waypoint_distances[frozenset([waypoint1, waypoint2])] = distance
-        waypoint_durations[frozenset([waypoint1, waypoint2])] = duration
+            # "duration" is in seconds
+            duration = route["rows"][0]["elements"][0]["duration"]["value"]
 
-    except Exception as e:
-        print("Error with finding the route between %s and %s." % (waypoint1, waypoint2))
+            waypoint_distances[frozenset([waypoint1, waypoint2])] = distance
+            waypoint_durations[frozenset([waypoint1, waypoint2])] = duration
 
-with open("my-waypoints-dist-dur.tsv", "wb") as out_file:
-    out_file.write("\t".join(["waypoint1",
-                              "waypoint2",
-                              "distance_m",
-                              "duration_s"]))
+        except Exception as e:
+            num_errors += 1
+            print("Error with finding the route between %s and %s." % (waypoint1, waypoint2))
+            if num_errors >= 10:
+                print("More than {} errors, exiting program.".format(num_errors))
 
-    for (waypoint1, waypoint2) in waypoint_distances.keys():
-        out_file.write("\n" +
-                       "\t".join([waypoint1,
-                                  waypoint2,
-                                  str(waypoint_distances[frozenset([waypoint1, waypoint2])]),
-                                  str(waypoint_durations[frozenset([waypoint1, waypoint2])])]))
+    return waypoint_distances, waypoint_durations
 
-# Use a genetic algorithm to optimize the order to visit the waypoints in
+    # NOTE: legacy code from file-reading and writing
+    # with open("my-waypoints-dist-dur.tsv", "wb") as out_file:
+    #     out_file.write("\t".join(["waypoint1",
+    #                               "waypoint2",
+    #                               "distance_m",
+    #                               "duration_s"]))
 
-waypoint_distances = {}
-waypoint_durations = {}
-all_waypoints = set()
-
-waypoint_data = pd.read_csv("my-waypoints-dist-dur.tsv", sep="\t")
-
-for i, row in waypoint_data.iterrows():
-    waypoint_distances[frozenset([row.waypoint1, row.waypoint2])] = row.distance_m
-    waypoint_durations[frozenset([row.waypoint1, row.waypoint2])] = row.duration_s
-    all_waypoints.update([row.waypoint1, row.waypoint2])
-
-import random
+    #     for (waypoint1, waypoint2) in waypoint_distances.keys():
+    #         out_file.write("\n" +
+    #                        "\t".join([waypoint1,
+    #                                   waypoint2,
+    #                                   str(waypoint_distances[frozenset([waypoint1, waypoint2])]),
+    #                                   str(waypoint_durations[frozenset([waypoint1, waypoint2])])]))
 
 def compute_fitness(solution):
     """
@@ -150,7 +97,7 @@ def compute_fitness(solution):
 
     return solution_fitness
 
-def generate_random_agent():
+def generate_random_agent(all_waypoints):
     """
         Creates a random road trip from the waypoints.
     """
@@ -258,29 +205,62 @@ def run_genetic_algorithm(generations=5000, population_size=100):
 
         population = new_population
 
-# Running the genetic algorithm
+    # TODO: this function needs to return the optimal route!
 
-run_genetic_algorithm(generations=5000, population_size=100)
+# TODO: build out optimize function to talk with API
+def optimize(locations):
+    """ takes a list of locations, runs a genetic algorithm, and returns
+    an ordered list of the most optimal locations in order """
 
-# Visualize your road trip on a Google Map
+    ordered_locations = locations
+    return ordered_locations
 
-optimal_route = ('Graceland, Elvis Presley Boulevard, Memphis, TN', 'Vicksburg National Military Park, Clay Street, Vicksburg, MS', 'French Quarter, New Orleans, LA', 'USS Alabama, Battleship Parkway, Mobile, AL', 'Cape Canaveral, FL', 'Okefenokee Swamp Park, Okefenokee Swamp Park Road, Waycross, GA', "Fort Sumter National Monument, Sullivan's Island, SC", 'Wright Brothers National Memorial Visitor Center, Manteo, NC', 'Congress Hall, Congress Place, Cape May, NJ 08204', 'Shelburne Farms, Harbor Road, Shelburne, VT', 'Omni Mount Washington Resort, Mount Washington Hotel Road, Bretton Woods, NH', 'Acadia National Park, Maine', 'USS Constitution, Boston, MA', 'The Breakers, Ochre Point Avenue, Newport, RI', 'The Mark Twain House & Museum, Farmington Avenue, Hartford, CT', 'Statue of Liberty, Liberty Island, NYC, NY', 'Liberty Bell, 6th Street, Philadelphia, PA', 'New Castle Historic District, Delaware', 'Maryland State House, 100 State Cir, Annapolis, MD 21401', 'White House, Pennsylvania Avenue Northwest, Washington, DC', 'Mount Vernon, Fairfax County, Virginia', 'Lost World Caverns, Lewisburg, WV', 'Olympia Entertainment, Woodward Avenue, Detroit, MI', 'Spring Grove Cemetery, Spring Grove Avenue, Cincinnati, OH', 'Mammoth Cave National Park, Mammoth Cave Pkwy, Mammoth Cave, KY', 'West Baden Springs Hotel, West Baden Avenue, West Baden Springs, IN', 'Gateway Arch, Washington Avenue, St Louis, MO', 'Lincoln Home National Historic Site Visitor Center, 426 South 7th Street, Springfield, IL', 'Taliesin, County Road C, Spring Green, Wisconsin', 'Fort Snelling, Tower Avenue, Saint Paul, MN', 'Terrace Hill, Grand Avenue, Des Moines, IA', 'C. W. Parker Carousel Museum, South Esplanade Street, Leavenworth, KS', 'Ashfall Fossil Bed, Royal, NE', 'Mount Rushmore National Memorial, South Dakota 244, Keystone, SD', 'Fort Union Trading Post National Historic Site, Williston, North Dakota 1804, ND', 'Glacier National Park, West Glacier, MT', 'Yellowstone National Park, WY 82190', 'Craters of the Moon National Monument & Preserve, Arco, ID', 'Hanford Site, Benton County, WA', 'Columbia River Gorge National Scenic Area, Oregon', 'Cable Car Museum, 94108, 1201 Mason St, San Francisco, CA 94108', 'San Andreas Fault, San Benito County, CA', 'Hoover Dam, NV', 'Grand Canyon National Park, Arizona', 'Bryce Canyon National Park, Hwy 63, Bryce, UT', 'Pikes Peak, Colorado', 'Carlsbad Caverns National Park, Carlsbad, NM', 'The Alamo, Alamo Plaza, San Antonio, TX', 'Chickasaw National Recreation Area, 1008 W 2nd St, Sulphur, OK 73086', 'Toltec Mounds, Scott, AR')
+def temporary():
 
-optimal_route = list(optimal_route)
-optimal_route += [optimal_route[0]]
-subset = 0
+    # Running the genetic algorithm
 
-while subset < len(optimal_route):
+    run_genetic_algorithm(generations=5000, population_size=100)
 
-    waypoint_subset = optimal_route[subset:subset + 10]
-    output = "calcRoute(\"%s\", \"%s\", [" % (waypoint_subset[0], waypoint_subset[-1])
-    for waypoint in waypoint_subset[1:-1]:
-        output += "\"%s\", " % (waypoint)
+    # Visualize your road trip on a Google Map
 
-    if len(waypoint_subset[1:-1]) > 0:
-        output = output[:-2]
+    optimal_route = ('Graceland, Elvis Presley Boulevard, Memphis, TN', 'Vicksburg National Military Park, Clay Street, Vicksburg, MS', 'French Quarter, New Orleans, LA', 'USS Alabama, Battleship Parkway, Mobile, AL', 'Cape Canaveral, FL', 'Okefenokee Swamp Park, Okefenokee Swamp Park Road, Waycross, GA', "Fort Sumter National Monument, Sullivan's Island, SC", 'Wright Brothers National Memorial Visitor Center, Manteo, NC', 'Congress Hall, Congress Place, Cape May, NJ 08204', 'Shelburne Farms, Harbor Road, Shelburne, VT', 'Omni Mount Washington Resort, Mount Washington Hotel Road, Bretton Woods, NH', 'Acadia National Park, Maine', 'USS Constitution, Boston, MA', 'The Breakers, Ochre Point Avenue, Newport, RI', 'The Mark Twain House & Museum, Farmington Avenue, Hartford, CT', 'Statue of Liberty, Liberty Island, NYC, NY', 'Liberty Bell, 6th Street, Philadelphia, PA', 'New Castle Historic District, Delaware', 'Maryland State House, 100 State Cir, Annapolis, MD 21401', 'White House, Pennsylvania Avenue Northwest, Washington, DC', 'Mount Vernon, Fairfax County, Virginia', 'Lost World Caverns, Lewisburg, WV', 'Olympia Entertainment, Woodward Avenue, Detroit, MI', 'Spring Grove Cemetery, Spring Grove Avenue, Cincinnati, OH', 'Mammoth Cave National Park, Mammoth Cave Pkwy, Mammoth Cave, KY', 'West Baden Springs Hotel, West Baden Avenue, West Baden Springs, IN', 'Gateway Arch, Washington Avenue, St Louis, MO', 'Lincoln Home National Historic Site Visitor Center, 426 South 7th Street, Springfield, IL', 'Taliesin, County Road C, Spring Green, Wisconsin', 'Fort Snelling, Tower Avenue, Saint Paul, MN', 'Terrace Hill, Grand Avenue, Des Moines, IA', 'C. W. Parker Carousel Museum, South Esplanade Street, Leavenworth, KS', 'Ashfall Fossil Bed, Royal, NE', 'Mount Rushmore National Memorial, South Dakota 244, Keystone, SD', 'Fort Union Trading Post National Historic Site, Williston, North Dakota 1804, ND', 'Glacier National Park, West Glacier, MT', 'Yellowstone National Park, WY 82190', 'Craters of the Moon National Monument & Preserve, Arco, ID', 'Hanford Site, Benton County, WA', 'Columbia River Gorge National Scenic Area, Oregon', 'Cable Car Museum, 94108, 1201 Mason St, San Francisco, CA 94108', 'San Andreas Fault, San Benito County, CA', 'Hoover Dam, NV', 'Grand Canyon National Park, Arizona', 'Bryce Canyon National Park, Hwy 63, Bryce, UT', 'Pikes Peak, Colorado', 'Carlsbad Caverns National Park, Carlsbad, NM', 'The Alamo, Alamo Plaza, San Antonio, TX', 'Chickasaw National Recreation Area, 1008 W 2nd St, Sulphur, OK 73086', 'Toltec Mounds, Scott, AR')
 
-    output += "]);"
-    print(output)
-    print("")
-    subset += 9
+    optimal_route = list(optimal_route)
+    optimal_route += [optimal_route[0]]
+    subset = 0
+
+    while subset < len(optimal_route):
+
+        waypoint_subset = optimal_route[subset:subset + 10]
+        output = "calcRoute(\"%s\", \"%s\", [" % (waypoint_subset[0], waypoint_subset[-1])
+        for waypoint in waypoint_subset[1:-1]:
+            output += "\"%s\", " % (waypoint)
+
+        if len(waypoint_subset[1:-1]) > 0:
+            output = output[:-2]
+
+        output += "]);"
+        print(output)
+        print("")
+        subset += 9
+
+def test_find_paired_data(test_waypoints):
+    num_pairs = len(list(combinations(test_waypoints, 2)))
+    result = find_paired_data(test_waypoints)
+    assert len(result[0]) == len(result[1]) == num_pairs, "function did not return correct number of pairs"
+
+def test_compute_fitness(test_waypoints):
+    pass
+
+if __name__ == '__main__':
+    # Fixtures for SIX road trip waypoints
+    test_waypoints = ["USS Alabama, Battleship Parkway, Mobile, AL",
+                     "Grand Canyon National Park, Arizona",
+                     "Toltec Mounds, Scott, AR",
+                     "San Andreas Fault, San Benito County, CA",
+                     "Cable Car Museum, 94108, 1201 Mason St, San Francisco, CA 94108",
+                     "Pikes Peak, Colorado"]
+
+    # test_find_paired_data(test_waypoints)
+    test_compute_fitness()
+
