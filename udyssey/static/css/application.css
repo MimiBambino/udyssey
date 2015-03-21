@@ -1,0 +1,41 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  padding-top: 50px;
+}
+
+.main-content, .main-content .row {
+  height: 100%;
+}
+
+.locations-bar {
+  height: 100%;
+  padding: 16px;
+}
+.map-placeholder {
+  background: pink;
+  height: 100%;
+}
+
+.delete-location {
+  display: none;
+}
+.location:hover .delete-location {
+  display: inline-block;
+  float: right;
+}
+
+#map-canvas {
+  width: 75%;
+  height: calc(100% - 0);
+  position: absolute;
+  right: 0;
+  top: 50px;
+  bottom: 0;
+  z-index: 1;
+}
