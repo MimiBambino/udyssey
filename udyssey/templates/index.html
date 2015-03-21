@@ -52,25 +52,25 @@
   <div class="container-fluid main-content">
     <div class="row">
       <div class="locations-bar col-md-3">
-        <form class="input-group locations-form">
-          <input type="text" class="form-control" placeholder="Somewhere awesome" />
+        <form class="input-group locations-form"
+              data-bind="submit: addLocation">
+          <input type="text" class="form-control" placeholder="Somewhere awesome"
+                 data-bind="value: locationInput" />
           <span class="input-group-btn">
             <input type="submit" class="btn btn-success" value="Add" />
           </span>
         </form>
         <hr />
-        <ul class="list-group locations-list">
+        <ul class="list-group locations-list"
+            data-bind="foreach: {data: locations, as: 'location' }">
           <li class="list-group-item location">
-            <a href="#">
-              New York, NY
+            <a href="#"
+               data-bind="text: location">
             </a>
             <a href="#" class="delete-location">
               <i class="fa fa-minus text-danger"></i>
             </a>
           </li>
-          <li class="list-group-item location">Chicago, IL</li>
-          <li class="list-group-item location">Austin, TX</li>
-          <li class="list-group-item location">Mountain View, CA</li>
         </ul>
       </div>
       <div class="map-placeholder col-md-9">
