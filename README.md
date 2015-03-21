@@ -6,13 +6,13 @@ Web application for planning awesome road trips
 
 ### How to Run
 
-1. Ensure you have [Python](https://www.python.org/downloads/) and [virtualenv](http://simononsoftware.com/virtualenv-tutorial/) installed.
-2. Create a new virtual environment: `virtualenv venv`
-3. Activate it: `source venv/bin/activate`
+1. Ensure you have [Python](https://www.python.org/downloads/) and (optional) [virtualenv](http://simononsoftware.com/virtualenv-tutorial/) installed.
+2. (Optional) Create a new virtual environment: `virtualenv venv`
+3. (Optional) Activate it: `source venv/bin/activate`
 4. Install requirements: `pip install -r requirements.txt`
 5. Run the server: `python runserver.py`
 6. Open up the page in your web browser @ http://localhost:5000/
-7. You can deactivate the venv with: `deactivate`
+7. (Optional) You can deactivate the venv with: `deactivate`
 
 ### Where to Contribute
 
