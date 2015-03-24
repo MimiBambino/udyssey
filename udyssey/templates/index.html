@@ -56,7 +56,7 @@
         <form class="input-group locations-form"
               data-bind="submit: addLocation">
           <input id="address" type="text" class="form-control" placeholder="Somewhere awesome"
-                 data-bind="value: locationInput" />
+                 data-bind="value: locationInput, valueUpdate:'afterkeydown'" />
           <span class="input-group-btn">
             <input type="submit" class="btn btn-success" value="Add" />
           </span>
@@ -84,11 +84,11 @@
   <!-- scripts -->
   <script src="{{ url_for('static', filename='js/jquery-2.1.3.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/knockout-3.2.0.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/bloodhound.js') }}"></script>
   <script src="{{ url_for('static', filename='js/typeahead.jquery.js') }}"></script>
   <script src="{{ url_for('static', filename='js/typeahead-addresspicker.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/knockout-3.2.0.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/application.js') }}"></script>
   <script type="text/javascript">
 
