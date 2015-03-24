@@ -244,10 +244,12 @@ def temporary():
         print("")
         subset += 9
 
+
 def test_find_paired_data(test_waypoints):
     num_pairs = len(list(combinations(test_waypoints, 2)))
     result = find_paired_data(test_waypoints)
-    assert len(result[0]) == len(result[1]) == num_pairs, "function did not return correct number of pairs"
+    assert len(result[0]) == len(result[1]) == num_pairs,"function did not return correct number of pairs"
+
 
 def test_compute_fitness(test_waypoints):
     pass
@@ -263,4 +265,3 @@ if __name__ == '__main__':
 
     # test_find_paired_data(test_waypoints)
     test_compute_fitness()
-

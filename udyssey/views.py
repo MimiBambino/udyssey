@@ -2,18 +2,19 @@ from udyssey import app
 from flask import Flask, flash, jsonify, redirect, render_template,\
                   request, session, url_for
 
-# error handlers
 
+# error handlers
 def bad_request(message):
     response = jsonify({'message': message})
     response.status_code = 400
     return response
 
-# routes
 
+# routes
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/api/optimize', methods=['POST'])
 def optimize():
@@ -31,8 +32,8 @@ def optimize():
 
     return jsonify(request.json)
 
-# helper methods
 
+# helper methods
 def check_optimize_request(request):
     """ checks if an optimization request is valid
     params:
@@ -46,7 +47,7 @@ def check_optimize_request(request):
     try:
         locations = request.json['locations']
 
-    except Exception as e:
+    except Exception:
         return (False, 'No locations found.')
 
     # each location should have a lat and lon
