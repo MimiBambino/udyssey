@@ -57,7 +57,7 @@
         <form class="input-group locations-form"
               data-bind="submit: addLocation">
           <input id="address" type="text" class="form-control" placeholder="Somewhere awesome" autofocus
-                 data-bind="value: locationInput, valueUpdate:'afterkeydown'" />
+                 data-bind="value: locationInput, valueUpdate: ['afterkeydown', 'blur']" />
           <span class="input-group-btn">
             <input type="submit" class="btn btn-success" value="Add" />
           </span>
