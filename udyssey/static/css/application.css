@@ -24,7 +24,8 @@ body {
 
 .location:hover .delete-location {
   display: inline-block;
-  float: right;
+  position: absolute;
+  right: 16px;
 }
 
 .map-placeholder {

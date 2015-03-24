@@ -3,10 +3,10 @@
 
   /* Fixtures */
   var fixtureLocations = [
-    "Chicago, IL",
-    "New York, NY",
-    "Austin, TX",
-    "Mountain View, CA"
+    "Chicago, IL, United States",
+    "New York, NY, United States",
+    "Austin, TX, United States",
+    "Mountain View, CA, United States"
   ];
 
   /* Google Maps Model */
