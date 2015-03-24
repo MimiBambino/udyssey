@@ -3,10 +3,10 @@
 
   /* Fixtures */
   var fixtureLocations = [
-    "Chicago, IL",
-    "New York, NY",
-    "Austin, TX",
-    "Mountain View, CA"
+    "Chicago, IL, United States",
+    "New York, NY, United States",
+    "Austin, TX, United States",
+    "Mountain View, CA, United States"
   ];
 
   /* Google Maps Model */
@@ -22,7 +22,7 @@
     };
 
     // create our map object
-    var map = new google.maps.Map(mapCanvas, mapOptions);    
+    var map = new google.maps.Map(mapCanvas, mapOptions);
 
     return map;
   };
@@ -40,11 +40,11 @@
   var AppViewModel = function() {
     var self = this;
     var map;
-    var geocoder;    
+    var geocoder;
 
     function initialize() {
       map = new GoogleMap();
-      geocoder = new GoogleMapsGeocoder();      
+      geocoder = new GoogleMapsGeocoder();
 
       // initialize fixture data
       fixtureLocations.forEach(function(location) {
@@ -54,14 +54,15 @@
 
     // initialize our observables
     self.locations = ko.observableArray([]);
-    self.locationInput = ko.observable('');    
+    self.locationInput = ko.observable('');
 
     // add location function
     self.addLocation = function() {
-      console.log(self.locationInput());
-      self.locations.push(self.locationInput());
-      self.locationInput('');
-    };    
+      if (self.locationInput().length > 0) {
+        self.locations.push(self.locationInput());
+        self.locationInput('');
+      }
+    };
 
     // remove location function
     self.removeLocation = function() {
@@ -77,8 +78,8 @@
         displayKey: 'description',
         source: addressPicker.ttAdapter()
       });
-      addressPicker.bindDefaultTypeaheadEvent($('#address'));      
-    }) 
+      addressPicker.bindDefaultTypeaheadEvent($('#address'));
+    });
 
     $(document).ready(initialize);
   };
