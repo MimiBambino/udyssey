@@ -18,6 +18,7 @@ Modifications made were to support integration with a Flask web application.
 
 import googlemaps
 import numpy as np
+import os
 import pandas as pd
 import random
 
@@ -25,7 +26,19 @@ from itertools import combinations
 
 # Invoke Google Maps
 
-gmaps = googlemaps.Client(key="AIzaSyDfvx3mjNX3kjZ1lUnS_plF8MqymI6I8Ec")
+# Note: there should be an environmental variable declared for the Google API
+# Server Key (accessible at console.developers.google.com). In shell, execute:
+#
+#     $ export GOOGLE_API_SERVER_KEY=AIzaSyDfvx3mjNX3kjZ1lUnS_plF8MqymI6I8Ec
+#
+# (replace the websafe key with your respective key)
+
+google_api_server_key = os.getenv('GOOGLE_API_SERVER_KEY')
+
+if google_api_server_key:
+    gmaps = googlemaps.Client(key=google_api_server_key)
+else:
+    raise ValueError('no API key declared as environmental variables.')
 
 # Gather the distance traveled on the shortest route between all waypoints
 
@@ -263,5 +276,5 @@ if __name__ == '__main__':
                      "Cable Car Museum, 94108, 1201 Mason St, San Francisco, CA 94108",
                      "Pikes Peak, Colorado"]
 
-    # test_find_paired_data(test_waypoints)
-    test_compute_fitness()
+    test_find_paired_data(test_waypoints)
+    # test_compute_fitness()
