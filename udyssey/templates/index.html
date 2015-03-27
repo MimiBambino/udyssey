@@ -5,13 +5,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery-ui.min.css') }}" />
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/typeahead.min.css') }}" />
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/application.css') }}" />
+  <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../static/css/jquery-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../static/css/typeahead.min.css" />
+  <link rel="stylesheet" type="text/css" href="../static/css/application.css" />
 
   <script type="text/javascript"
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBzVDoOcHizxh8_HfACj08b6uPT85kWWk&sensor=false&libraries=places">
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBzVDoOcHizxh8_HfACj08b6uPT85kWWk&sensor=false&libraries=places&&language=en">
   </script>
 </head>
 <body>
@@ -55,11 +55,11 @@
     <div class="row">
       <div class="locations-bar col-md-3">
         <form class="input-group locations-form"
-              data-bind="submit: addLocation">
+              data-bind="submit: searchNewLocation">
           <input id="address" type="text" class="form-control" placeholder="Somewhere awesome" autofocus
                  data-bind="value: locationInput, valueUpdate: ['afterkeydown', 'blur']" />
           <span class="input-group-btn">
-            <input type="submit" class="btn btn-success" value="Add" />
+            <input type="submit" class="btn btn-success" value="Search" />
           </span>
           <div id='gmaps-error'></div>
         </form>
@@ -83,14 +83,14 @@
   </div>
 
   <!-- scripts -->
-  <script src="{{ url_for('static', filename='js/jquery-2.1.3.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/bloodhound.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/typeahead.jquery.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/typeahead-addresspicker.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/knockout-3.2.0.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/application.js') }}"></script>
+  <script src="../static/js/jquery-2.1.3.min.js"></script>
+  <script src="../static/js/jquery-ui.min.js"></script>
+  <script src="../static/js/bloodhound.js"></script>
+  <script src="../static/js/typeahead.jquery.js"></script>
+  <script src="../static/js/typeahead-addresspicker.js"></script>
+  <script src="../static/js/bootstrap.min.js"></script>
+  <script src="../static/js/knockout-3.2.0.min.js"></script>
+  <script src="../static/js/application.js"></script>
   <script type="text/javascript">
 
   </script>
