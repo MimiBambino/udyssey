@@ -11,7 +11,7 @@
   <link rel="stylesheet" type="text/css" href="../static/css/application.css" />
 
   <script type="text/javascript"
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBzVDoOcHizxh8_HfACj08b6uPT85kWWk&sensor=false&libraries=places">
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBzVDoOcHizxh8_HfACj08b6uPT85kWWk&sensor=false&libraries=places&&language=en">
   </script>
 </head>
 <body>
@@ -55,11 +55,11 @@
     <div class="row">
       <div class="locations-bar col-md-3">
         <form class="input-group locations-form"
-              data-bind="submit: addLocation">
+              data-bind="submit: searchNewLocation">
           <input id="address" type="text" class="form-control" placeholder="Somewhere awesome" autofocus
                  data-bind="value: locationInput, valueUpdate: ['afterkeydown', 'blur']" />
           <span class="input-group-btn">
-            <input type="submit" class="btn btn-success" value="Add" />
+            <input type="submit" class="btn btn-success" value="Search" />
           </span>
           <div id='gmaps-error'></div>
         </form>
