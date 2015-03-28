@@ -1,7 +1,29 @@
 (function() {
   'use strict';
 
-  /* MapMarkerSet class contains information of each location marker */
+  // prototype method for Arrays. This method takes another array as an input
+  // and returns true if both arrays have same values in same order, otherwise false.
+  Array.prototype.isSameAs = function(arrayB) {
+    if (this.length !== arrayB.length) {
+      return false;
+    } else {
+      for (var i=0; i < this.length; i++) {
+        if (this[i] !== arrayB[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+  };
+
+  /**
+   * MapMarkerSet class contains information of each location marker
+   * 
+   *  - marker: a map marker of the location
+   *  - name: a short name of the location from PlaceSearch
+   *  - keyword: formatted address from PlaceSearch, which will be displayed as keyword
+   *  - position: LatLng object of the location, which contains lat and lon values
+   */
   var MapMarkerSet = function(marker, name, keyword, position) {
     this.marker = marker,
     this.name = name,
@@ -65,6 +87,18 @@
     self.locations = ko.observableArray([]);
     self.locationInput = ko.observable('');
 
+    // computes optimized route when user adds a new location
+    self.optimizedRoute = ko.computed(function() {
+      if (self.locations().length > 1) {
+        // TODO: compute optimized route when locations is changed
+        // this will be using AJAX call to Udyssey backend.
+
+        // example
+        // $.getJson('udysseyApiUrl', function() {...});
+        // return route;
+      }
+    });
+
 
     // ==============
     //  VM functions
@@ -99,6 +133,17 @@
     self.removeLocation = function() {
       self.locations.remove(this);
       removeMarker(this);
+    };
+
+    // trigger click event to markers when list item is clicked
+    self.clickMarker = function(location) {
+      locationMarkers.forEach(function(markerSet) {
+        console.log(markerSet.keyword);
+        if (markerSet.keyword === location.toLowerCase()) {
+          google.maps.event.trigger(markerSet.marker, 'click');
+          map.panTo(markerSet.position);
+        }
+      });
     };
 
 
@@ -186,6 +231,11 @@
         infowindow.close();
         self.locationInput('');
       });
+
+      // make sure initial markers have no add buttons
+      if (fixtureLocations.isSameAs(self.locations()) && fixtureLocations.indexOf(keyword) !== -1) {
+        button.style.display = 'none';
+      }
 
       google.maps.event.addListener(marker, 'click', function() {
         infowindow.setContent(content);

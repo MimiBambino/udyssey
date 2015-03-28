@@ -29,7 +29,7 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="#">
-          Udyssey
+          UDYSSEY
         </a>
       </div>
       <div class="collapse navbar-collapse">
@@ -38,7 +38,7 @@
             <i class="fa fa-question"></i>
             About
           </a></li>
-          <li><a href="#">
+          <li><a href="https://github.com/mudacity/udyssey" target="blank">
             <i class="fa fa-github"></i>
             GitHub
           </a></li>
@@ -59,7 +59,7 @@
           <input id="address" type="text" class="form-control" placeholder="Somewhere awesome" autofocus
                  data-bind="value: locationInput, valueUpdate: ['afterkeydown', 'blur']" />
           <span class="input-group-btn">
-            <input type="submit" class="btn btn-success" value="Search" />
+            <input type="submit" class="btn btn-primary search-btn" value="Search" />
           </span>
           <div id='gmaps-error'></div>
         </form>
@@ -68,7 +68,7 @@
             data-bind="foreach: {data: locations, as: 'location' }">
           <li class="list-group-item location">
             <a href="#"
-               data-bind="text: location">
+               data-bind="text: location, click: $root.clickMarker">
             </a>
             <a href="#" class="delete-location" data-bind="click: $parent.removeLocation">
               <i class="fa fa-minus text-danger"></i>
