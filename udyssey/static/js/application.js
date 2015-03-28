@@ -1,6 +1,19 @@
 (function() {
   'use strict';
 
+  Array.prototype.isSameAs = function(arrayB) {
+    if (this.length !== arrayB.length) {
+      return false;
+    } else {
+      for (var i=0; i < this.length; i++) {
+        if (this[i] !== arrayB[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+  };
+
   /* MapMarkerSet class contains information of each location marker */
   var MapMarkerSet = function(marker, name, keyword, position) {
     this.marker = marker,
@@ -101,6 +114,17 @@
       removeMarker(this);
     };
 
+    // trigger click event to markers when list item is clicked
+    self.clickMarker = function(location) {
+      locationMarkers.forEach(function(markerSet) {
+        console.log(markerSet.keyword);
+        if (markerSet.keyword === location.toLowerCase()) {
+          google.maps.event.trigger(markerSet.marker, 'click');
+          map.panTo(markerSet.position);
+        }
+      });
+    };
+
 
     // ==================
     //  Helper functions
@@ -186,6 +210,11 @@
         infowindow.close();
         self.locationInput('');
       });
+
+      // make sure initial markers have no add buttons
+      if (fixtureLocations.isSameAs(self.locations()) && fixtureLocations.indexOf(keyword) !== -1) {
+        button.style.display = 'none';
+      }
 
       google.maps.event.addListener(marker, 'click', function() {
         infowindow.setContent(content);
