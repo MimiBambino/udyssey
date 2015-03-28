@@ -1,6 +1,8 @@
 (function() {
   'use strict';
 
+  // prototype method for Arrays. This method takes another array as an input
+  // and returns true if both arrays have same values in same order, otherwise false.
   Array.prototype.isSameAs = function(arrayB) {
     if (this.length !== arrayB.length) {
       return false;
@@ -14,7 +16,14 @@
     }
   };
 
-  /* MapMarkerSet class contains information of each location marker */
+  /**
+   * MapMarkerSet class contains information of each location marker
+   * 
+   *  - marker: a map marker of the location
+   *  - name: a short name of the location from PlaceSearch
+   *  - keyword: formatted address from PlaceSearch, which will be displayed as keyword
+   *  - position: LatLng object of the location, which contains lat and lon values
+   */
   var MapMarkerSet = function(marker, name, keyword, position) {
     this.marker = marker,
     this.name = name,
@@ -77,6 +86,18 @@
 
     self.locations = ko.observableArray([]);
     self.locationInput = ko.observable('');
+
+    // computes optimized route when user adds a new location
+    self.optimizedRoute = ko.computed(function() {
+      if (self.locations().length > 1) {
+        // TODO: compute optimized route when locations is changed
+        // this will be using AJAX call to Udyssey backend.
+
+        // example
+        // $.getJson('udysseyApiUrl', function() {...});
+        // return route;
+      }
+    });
 
 
     // ==============
