@@ -77,7 +77,18 @@
     var service;
     var newLocation;
     var previousLocation;
+    var directionsService;
     var locationMarkers = [];
+    var directionsDisplayOptions = {
+      preserveViewport: true,
+      markerOptions: {icon: ""}
+    };
+    // DirectionsRenderer objects
+    // there are 6 of them, so current maximum is 55 locations
+    // (max locations = 10 + 9 + 9 + 9 + 9 + 9 = 55)
+    var directionsDisplay1, directionsDisplay2,
+    directionsDisplay3, directionsDisplay4,
+    directionsDisplay5, directionsDisplay6;
 
 
     // =============
@@ -89,13 +100,41 @@
 
     // computes optimized route when user adds a new location
     self.optimizedRoute = ko.computed(function() {
-      if (self.locations().length > 1) {
+      // this should be an "actual" optimized route later
+      // currently, it's just a list of user added locations
+      var optimizedRoute = self.locations();
+      var optLen = optimizedRoute.length;
+
+      if (optLen > 2) {
         // TODO: compute optimized route when locations is changed
         // this will be using AJAX call to Udyssey backend.
 
         // example
+        // var optimizedRoute = [];
         // $.getJson('udysseyApiUrl', function() {...});
-        // return route;
+        
+        // example of rendering route on the map
+        // this will be modified to use optimized route
+        calcRoute(directionsDisplay1, optimizedRoute.slice(0, 10));
+
+        // since DirectionsRenderer has max 10 locations limit per request,
+        // we need to make request every time number of locations is increased by 9
+        // still needs better a way to implement this.
+        if (optLen > 10 && optLen < 19) {
+          calcRoute(directionsDisplay2, optimizedRoute.slice(9, 19));
+        }
+        if (optLen > 18 && optLen < 28) {
+          calcRoute(directionsDisplay3, optimizedRoute.slice(18, 28));
+        }
+        if (optLen > 27 && optLen < 37) {
+          calcRoute(directionsDisplay4, optimizedRoute.slice(27, 37));
+        }
+        if (optLen > 36 && optLen < 46) {
+          calcRoute(directionsDisplay5, optimizedRoute.slice(36, 46));
+        }
+        if (optLen > 45 && optLen < 55) {
+          calcRoute(directionsDisplay6, optimizedRoute.slice(45, 55));
+        }
       }
     });
 
@@ -156,12 +195,31 @@
       map = new GoogleMap();
       geocoder = new GoogleMapsGeocoder();
       infowindow = new google.maps.InfoWindow();
+      directionsService = new google.maps.DirectionsService();
+
+      initDirectionsRenderers();
 
       // initialize fixture data
       fixtureLocations.forEach(function(location) {
         requestNewLocation(location);
         self.locations.push(location);
       });
+    }
+
+    // initialize DirectionsRenderer objects
+    function initDirectionsRenderers() {
+      directionsDisplay1 = new google.maps.DirectionsRenderer(directionsDisplayOptions);
+      directionsDisplay2 = new google.maps.DirectionsRenderer(directionsDisplayOptions);
+      directionsDisplay3 = new google.maps.DirectionsRenderer(directionsDisplayOptions);
+      directionsDisplay4 = new google.maps.DirectionsRenderer(directionsDisplayOptions);
+      directionsDisplay5 = new google.maps.DirectionsRenderer(directionsDisplayOptions);
+      directionsDisplay6 = new google.maps.DirectionsRenderer(directionsDisplayOptions);
+      directionsDisplay1.setMap(map);
+      directionsDisplay2.setMap(map);
+      directionsDisplay3.setMap(map);
+      directionsDisplay4.setMap(map);
+      directionsDisplay5.setMap(map);
+      directionsDisplay6.setMap(map);
     }
 
     // remove marker from map and locationMakrers array
@@ -241,6 +299,35 @@
         infowindow.setContent(content);
         infowindow.open(map, this);
         map.panTo(position);
+      });
+    }
+
+    // get routes from DirectionsService and render on the map.
+    function calcRoute(dirDisp, routes) {
+      var start = routes[0];
+      var end = routes[routes.length-1];
+      var waypts = [];
+
+      for (var i=1; i < routes.length-1; i++) {
+        waypts.push({
+          location: routes[i],
+          stopover: true
+        });
+      }
+
+      var request = {
+        origin: start,
+        destination: end,
+        waypoints: waypts,
+        optimizeWaypoints: false, // if this is set to true, then waypoints between start and end will be reordered with shortest route
+        // unitSystem: UnitSystem.IMPERIAL, // will be interatively toggled by user
+        travelMode: google.maps.TravelMode.DRIVING
+      };
+
+      directionsService.route(request, function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          dirDisp.setDirections(response);
+        }
       });
     }
 
