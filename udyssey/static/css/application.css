@@ -12,6 +12,54 @@ body {
 .main-content .row {
   height: 100%;
 }
+.locations-bar div.tab-row {
+  height: 40px;
+  text-align: center;
+  margin-left: 0px;
+  margin-right: 0px;
+  background-color: #294860;
+  border-radius: 3px;
+}
+div.tab-row .col-sm-6 {
+  padding-left: 0px;
+  padding-right: 0px;
+  -webkit-transition: background-color 0.2s ease-out;
+  transition: background-color 0.2s ease-out;
+}
+div.tab-row .col-sm-6:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+div.tab-row .col-sm-6:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+div.tab-row .col-sm-6:active {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+.tab-row a.tab-button {
+  display: inline-block;
+  width: 100%;
+  vertical-align: middle;
+  padding-top: 10px;
+  padding-bottom: 5px;
+  color: #FFFFFF;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.tab-row a.tab-button:hover {
+  text-decoration: none;
+}
+.tab-row a.tab-button:focus {
+  text-decoration: none;
+}
+.bottom-line {
+  height: 2px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 3px;
+}
+.tab-row p.selected {
+  background-color: #FFFFFF;
+}
 .locations-bar {
   height: 100%;
   padding: 16px;

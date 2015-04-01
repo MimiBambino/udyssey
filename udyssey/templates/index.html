@@ -64,8 +64,29 @@
           <div id='gmaps-error'></div>
         </form>
         <hr />
+        <div class="row tab-row">
+          <div class="col-sm-6" data-bind="click: clickTab">
+            <a href="#" class="tab-button">LOCATIONS</a>
+            <p class="bottom-line selected"></p>
+          </div>
+          <div class="col-sm-6" data-bind="click: clickTab">
+            <a href="#" class="tab-button">ROUTES</a>
+            <p class="bottom-line"></p>
+          </div>
+        </div>
         <ul class="list-group locations-list"
-            data-bind="foreach: {data: locations, as: 'location' }">
+            data-bind="foreach: {data: locations, as: 'location' }, visible: locationTab">
+          <li class="list-group-item location">
+            <a href="#"
+               data-bind="text: location, click: $root.clickMarker">
+            </a>
+            <a href="#" class="delete-location" data-bind="click: $parent.removeLocation">
+              <i class="fa fa-minus text-danger"></i>
+            </a>
+          </li>
+        </ul>
+        <ul class="list-group routes-list"
+            data-bind="foreach: {data: locations, as: 'location' }, visible: locationTab() === false">
           <li class="list-group-item location">
             <a href="#"
                data-bind="text: location, click: $root.clickMarker">
