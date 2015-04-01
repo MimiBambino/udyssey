@@ -97,6 +97,7 @@
 
     self.locations = ko.observableArray([]);
     self.locationInput = ko.observable('');
+    self.locationTab = ko.observable(true);
 
     // computes optimized route when user adds a new location
     self.optimizedRoute = ko.computed(function() {
@@ -120,19 +121,29 @@
         // since DirectionsRenderer has max 10 locations limit per request,
         // we need to make request every time number of locations is increased by 9
         // still needs better a way to implement this.
-        if (optLen > 10 && optLen < 19) {
+        if (optLen > 10 && optLen < 20) {
+          console.log("2nd dirDisp");
+          console.log(optLen);
           calcRoute(directionsDisplay2, optimizedRoute.slice(9, 19));
         }
-        if (optLen > 18 && optLen < 28) {
+        if (optLen > 19 && optLen < 29) {
+          console.log("3rd dirDisp");
+          console.log(optLen);
           calcRoute(directionsDisplay3, optimizedRoute.slice(18, 28));
         }
-        if (optLen > 27 && optLen < 37) {
+        if (optLen > 28 && optLen < 38) {
+          console.log("4th dirDisp");
+          console.log(optLen);
           calcRoute(directionsDisplay4, optimizedRoute.slice(27, 37));
         }
-        if (optLen > 36 && optLen < 46) {
+        if (optLen > 37 && optLen < 47) {
+          console.log("5th dirDisp");
+          console.log(optLen);
           calcRoute(directionsDisplay5, optimizedRoute.slice(36, 46));
         }
-        if (optLen > 45 && optLen < 55) {
+        if (optLen > 46 && optLen < 56) {
+          console.log("6th dirDisp");
+          console.log(optLen);
           calcRoute(directionsDisplay6, optimizedRoute.slice(45, 55));
         }
       }
@@ -177,12 +188,23 @@
     // trigger click event to markers when list item is clicked
     self.clickMarker = function(location) {
       locationMarkers.forEach(function(markerSet) {
-        console.log(markerSet.keyword);
         if (markerSet.keyword === location.toLowerCase()) {
           google.maps.event.trigger(markerSet.marker, 'click');
           map.panTo(markerSet.position);
         }
       });
+    };
+
+    // make tabs more interative and display content accordingly
+    self.clickTab = function(vm, event) {
+      $('.bottom-line').removeClass('selected');
+      $(event.target).siblings().addClass('selected');
+
+      if ($(event.target).text() === 'LOCATIONS') {
+        self.locationTab(true);
+      } else {
+        self.locationTab(false);
+      }
     };
 
 
@@ -326,6 +348,7 @@
 
       directionsService.route(request, function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
+          console.log(response);
           dirDisp.setDirections(response);
         }
       });
